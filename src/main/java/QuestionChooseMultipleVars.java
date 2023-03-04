@@ -45,7 +45,7 @@ public class QuestionChooseMultipleVars implements Question {
         }
 
         while (!answered) {
-            if (this.rightAnswers.containsAll(userAnswers)) {
+            if (userAnswers.containsAll(rightAnswers)) { // было (rightAnswers.containsAll(userAnswers) - неправильно
                 answered = true;
                 answer = RIGHT_ANSWER;
                 isAnswered = true;

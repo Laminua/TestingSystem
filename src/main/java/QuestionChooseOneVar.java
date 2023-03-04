@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -29,10 +30,26 @@ public class QuestionChooseOneVar implements Question {
                 .forEach((key, value) -> System.out.println(key + " : " + value));
         System.out.print("\nВыбери один вариант: ");
 
+        boolean acceptInput = false;
+        int choice = 0;
+
+        while (!acceptInput) {
+
+            try {
+                choice = scanner.nextInt();
+                if (answers.containsKey(choice)) {
+                    acceptInput = true;
+                } else {
+                    System.err.println("Введи число от 1 до " + answers.size());
+                }
+            } catch (InputMismatchException e) {
+                System.err.println("Введи число!");
+                scanner.next();
+            }
+        }
+
         while (!selected) {
-            int choice = scanner.nextInt();
-            if (this.answers.containsKey(choice)) {
-                if (this.answers.get(choice).equals(this.rightAnswer)) {
+                if (answers.get(choice).equals(rightAnswer)) {
                     selected = true;
                     answer = RIGHT_ANSWER;
                     isAnswered = true;
@@ -42,9 +59,6 @@ public class QuestionChooseOneVar implements Question {
                     answer = BAD_ANSWER;
                     isAnswered = true;
                 }
-            } else {
-                System.out.println("Недопустимый ответ, попробуй ещё раз");
-            }
         }
         return answer;
     }
