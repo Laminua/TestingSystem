@@ -15,6 +15,7 @@ public class Test {
 
     public void setCompleteAndCollectStats(Collection<Question> questionCollection) {
         isComplete = true;
+
         answersCount = questionCollection.stream()
                 .map(Question::getIsAnswered)
                 .filter(b -> b)

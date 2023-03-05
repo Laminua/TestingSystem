@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -18,14 +21,19 @@ public class TestService {
         tests.forEach((key, value) -> System.out.println(key + " : " + value.description));
         System.out.print(CHOOSE_TEST);
 
+        int key = 0;
         boolean selected = false;
         while (!selected) {
-            int key = scanner.nextInt();
+            try {
+                key = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                scanner.next();
+            }
             if (tests.containsKey(key)) {
                 runTest(key);
                 selected = true;
             } else {
-                System.out.println("Такого теста не существует. Введи правильный номер");
+                System.err.println("Введи число от 1 до " + tests.size());
             }
         }
     }
