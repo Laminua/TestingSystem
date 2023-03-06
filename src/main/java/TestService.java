@@ -1,6 +1,3 @@
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.InputStreamReader;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -8,6 +5,8 @@ import java.util.stream.Collectors;
 public class TestService {
     static final String CHOOSE_TEST = "Выбери тест: ";
     static final String AVAILABLE_TESTS = "Доступные тесты";
+    static final String RIGHT_ANSWER = "Правильный ответ";
+    static final String BAD_ANSWER = "Неправильный ответ";
     Map<Integer, Test> tests;
     Scanner scanner = new Scanner(System.in);
 
@@ -18,7 +17,7 @@ public class TestService {
 
     public void showTests() {
         System.out.println(AVAILABLE_TESTS);
-        tests.forEach((key, value) -> System.out.println(key + " : " + value.description));
+        tests.forEach((key, value) -> System.out.println(key + " : " + value.description + value.info));
         System.out.print(CHOOSE_TEST);
 
         int key = 0;
@@ -41,7 +40,10 @@ public class TestService {
     public void runTest(int key) {
         tests.get(key).questions.stream()
                 .map(Question::processQuestion)
-                .forEach(System.out::println);
+                .forEach(bool -> {
+                    if (bool) System.out.println(RIGHT_ANSWER);
+                    else System.out.println(BAD_ANSWER);
+        });
         tests.get(key).setCompleteAndCollectStats(new ArrayList<>(tests.get(key).questions));
         showTests();
     }

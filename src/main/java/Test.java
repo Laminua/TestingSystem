@@ -3,6 +3,7 @@ import java.util.List;
 
 public class Test {
     String description;
+    String info = "";
     List<Question> questions;
     boolean isComplete = false;
     long answersCount = 0;
@@ -17,19 +18,17 @@ public class Test {
         isComplete = true;
 
         answersCount = questionCollection.stream()
-                .map(Question::getIsAnswered)
+                .map(Question::getStats)
+                .map(Stats::isAnswered)
                 .filter(b -> b)
                 .count();
         rightAnswersCount = questionCollection.stream()
-                .map(Question::getIsRightAnswered)
+                .map(Question::getStats)
+                .map(Stats::isRightAnswered)
                 .filter(b -> b)
                 .count();
-        description = description
-                + " * Пройден"
-                + " (Ответов: "
-                + answersCount
-                + ", из них верных: "
-                + rightAnswersCount
-                + ")";
+
+        info = " * Пройден (Ответов: " + answersCount + " , из них верных: " + rightAnswersCount + ")";
     }
+
 }

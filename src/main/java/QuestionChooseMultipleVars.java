@@ -5,23 +5,24 @@ import java.util.stream.Collectors;
 public class QuestionChooseMultipleVars implements Question {
     String q;
     Map<Integer, String> answers;
-    List<String> rightAnswers;
-    Scanner scanner = new Scanner(System.in);
-    boolean isAnswered = false;
-    boolean isRightAnswered = false;
+    List<Integer> rightAnswerKeys;
+    Scanner scanner;
+    Stats stats = new Stats();
 
-    public QuestionChooseMultipleVars(String question, List<String> listOfAnswers, List<String> rightAnswers) {
+    public QuestionChooseMultipleVars(String question,
+                                      List<String> listOfAnswers,
+                                      List<Integer> rightAnswerKeys,
+                                      Scanner scanner) {
         this.q = question;
         answers = listOfAnswers.stream()
                 .collect(Collectors.toMap((a -> listOfAnswers.indexOf(a) + 1), Function.identity()));
-        this.rightAnswers = rightAnswers;
+        this.rightAnswerKeys = rightAnswerKeys;
+        this.scanner = scanner;
     }
 
     @Override
-    public String processQuestion() {
-        boolean answered = false;
-        String answer = null;
-        List<String> userAnswers = new ArrayList<>();
+    public boolean processQuestion() {
+        List<Integer> userAnswers = new ArrayList<>();
         System.out.println(this.q);
         this.answers
                 .forEach((key, value) -> System.out.println(key + " : " + value));
@@ -33,39 +34,33 @@ public class QuestionChooseMultipleVars implements Question {
             try {
                 String lines = scanner.nextLine();
                 String[] strs = lines.trim().split("\\s+");
-                int[] input = new int[strs.length];
-                for (int i = 0; i < input.length; i++) {
-                    input[i] = Integer.parseInt(strs[i]);
+                for (int i = 0; i < strs.length; i++) {
+                    userAnswers.add(Integer.parseInt(strs[i]));
                     acceptInput = true;
-                    userAnswers.add(answers.get(input[i]));
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Чё-то не то ты вводишь, давай ещё раз");
+                System.err.println("Чё-то не то ты вводишь, давай ещё раз");
             }
         }
+
+        boolean answered = false;
+        boolean isRight = false;
 
         while (!answered) {
-            if (userAnswers.containsAll(rightAnswers)) { // было (rightAnswers.containsAll(userAnswers) - неправильно
+            if (userAnswers.containsAll(rightAnswerKeys)) {
+                stats.setStats(true);
+                isRight = true;
                 answered = true;
-                answer = RIGHT_ANSWER;
-                isAnswered = true;
-                isRightAnswered = true;
             } else {
+                stats.setStats(false);
                 answered = true;
-                answer = BAD_ANSWER;
-                isAnswered = true;
             }
         }
-        return answer;
+        return isRight;
     }
 
     @Override
-    public boolean getIsAnswered() {
-        return isAnswered;
-    }
-
-    @Override
-    public boolean getIsRightAnswered() {
-        return isRightAnswered;
+    public Stats getStats() {
+        return stats;
     }
 }

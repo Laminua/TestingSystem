@@ -8,22 +8,20 @@ import java.util.stream.Collectors;
 public class QuestionChooseOneVar implements Question {
     String q;
     Map<Integer, String> answers;
-    String rightAnswer;
-    Scanner scanner = new Scanner(System.in);
-    boolean isAnswered = false;
-    boolean isRightAnswered = false;
+    int rightAnswerKey;
+    Scanner scanner;
+    Stats stats = new Stats();
 
-    public QuestionChooseOneVar(String question, List<String> listOfAnswers, String rightAnswer) {
+    public QuestionChooseOneVar(String question, List<String> listOfAnswers, int rightAnswerKey, Scanner scanner) {
         this.q = question;
         answers = listOfAnswers.stream()
                 .collect(Collectors.toMap((a -> listOfAnswers.indexOf(a) + 1), Function.identity()));
-        this.rightAnswer = rightAnswer;
+        this.rightAnswerKey = rightAnswerKey;
+        this.scanner = scanner;
     }
 
     @Override
-    public String processQuestion() {
-        boolean selected = false;
-        String answer = null;
+    public boolean processQuestion() {
 
         System.out.println(this.q);
         this.answers
@@ -47,30 +45,25 @@ public class QuestionChooseOneVar implements Question {
                 scanner.next();
             }
         }
+        boolean selected = false;
+        boolean isRight = false;
 
         while (!selected) {
-                if (answers.get(choice).equals(rightAnswer)) {
+                if (choice == rightAnswerKey) {
+                    stats.setStats(true);
+                    isRight = true;
                     selected = true;
-                    answer = RIGHT_ANSWER;
-                    isAnswered = true;
-                    isRightAnswered = true;
                 } else {
+                    stats.setStats(false);
                     selected = true;
-                    answer = BAD_ANSWER;
-                    isAnswered = true;
                 }
         }
-        return answer;
+        return isRight;
     }
 
     @Override
-    public boolean getIsAnswered() {
-        return isAnswered;
-    }
-
-    @Override
-    public boolean getIsRightAnswered() {
-        return isRightAnswered;
+    public Stats getStats() {
+        return stats;
     }
 }
 

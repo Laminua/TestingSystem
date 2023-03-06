@@ -1,20 +1,21 @@
 import java.util.Scanner;
 
-public class QuestionInputAnswer implements Question{
+public class QuestionInputAnswer implements Question {
     String q;
     String rightAnswer;
-    Scanner scanner = new Scanner(System.in);
-    boolean isAnswered = false;
-    boolean isRightAnswered = false;
+    Scanner scanner;
+    Stats stats = new Stats();
 
-    public QuestionInputAnswer(String question, String rightAnswer) {
+    public QuestionInputAnswer(String question, String rightAnswer, Scanner scanner) {
         this.q = question;
         this.rightAnswer = rightAnswer;
+        this.scanner = scanner;
     }
+
     @Override
-    public String processQuestion() {
+    public boolean processQuestion() {
         boolean answered = false;
-        String answer = null;
+        boolean isRight = false;
 
         System.out.println(this.q);
 
@@ -23,26 +24,19 @@ public class QuestionInputAnswer implements Question{
         while (!answered) {
             String userAnswer = scanner.nextLine();
             if (rightAnswer.equalsIgnoreCase(userAnswer)) {
-                    answered = true;
-                    answer = RIGHT_ANSWER;
-                    isAnswered = true;
-                    isRightAnswered = true;
-                } else {
-                    answered = true;
-                    answer = BAD_ANSWER;
-                    isAnswered = true;
-                }
+                isRight = true;
+                stats.setStats(true);
+                answered = true;
+            } else {
+                stats.setStats(false);
+                answered = true;
+            }
         }
-        return answer;
+        return isRight;
     }
 
     @Override
-    public boolean getIsAnswered() {
-        return isAnswered;
-    }
-
-    @Override
-    public boolean getIsRightAnswered() {
-        return isRightAnswered;
+    public Stats getStats() {
+        return stats;
     }
 }
