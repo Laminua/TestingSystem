@@ -58,6 +58,7 @@ public class QuestionChooseOneVar implements Question {
                     selected = true;
                 }
         }
+        scanner.nextLine();
         return isRight;
     }
 
